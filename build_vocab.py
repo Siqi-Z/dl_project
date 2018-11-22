@@ -4,6 +4,8 @@ import argparse
 from collections import Counter
 from pycocotools.coco import COCO
 
+public_directory = '/projects/training/bauh/COCO'
+local_directory = './data'
 
 class Vocabulary(object):
     """Simple vocabulary wrapper."""
@@ -55,21 +57,34 @@ def build_vocab(json, threshold):
     return vocab
 
 def main(args):
-    vocab = build_vocab(json=args.caption_path, threshold=args.threshold)
-    vocab_path = args.vocab_path
-    with open(vocab_path, 'wb') as f:
-        pickle.dump(vocab, f)
+    train_vocab = build_vocab(json=args.train_caption_path, threshold=args.threshold)
+    test_vocab = build_vocab(json=args.test_caption_path, threshold=args.threshold)
+
+    train_vocab_path = args.train_vocab_path
+    with open(train_vocab_path, 'wb') as f:
+        pickle.dump(train_vocab, f)
     print("Total vocabulary size: {}".format(len(vocab)))
-    print("Saved the vocabulary wrapper to '{}'".format(vocab_path))
+    print("Saved the vocabulary wrapper to '{}'".format(train_vocab_path))
+
+    test_vocab_path = args.test_vocab_path
+    with open(test_vocab_path, 'wb') as f:
+        pickle.dump(test_vocab_path, f)
+    print("Total vocabulary size: {}".format(len(vocab)))
+    print("Saved the vocabulary wrapper to '{}'".format(test_vocab_path))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--caption_path', type=str, 
-                        default='data/annotations/captions_train2014.json', 
+    parser.add_argument('--train_caption_path', type=str, 
+                        default=public_directory+'/annotations/captions_train2014.json', 
                         help='path for train annotation file')
-    parser.add_argument('--vocab_path', type=str, default='./data/vocab.pkl', 
-                        help='path for saving vocabulary wrapper')
+    parser.add_argument('--test_caption_path', type=str, 
+                        default=public_directory+'/annotations/captions_val2014.json', 
+                        help='path for train annotation file')
+    parser.add_argument('--train_vocab_path', type=str, default=local_directory+'/train_vocab.pkl', 
+                        help='path for saving train vocabulary wrapper')
+    parser.add_argument('--test_vocab_path', type=str, default=local_directory+'/test_vocab.pkl', 
+                        help='path for saving test vocabulary wrapper')
     parser.add_argument('--threshold', type=int, default=4, 
                         help='minimum word count threshold')
     args = parser.parse_args()
