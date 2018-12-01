@@ -3,7 +3,7 @@ import os
 from PIL import Image
 
 public_directory = '/projects/training/bauh/COCO'
-local_directory = './data'
+local_directory = '/u/training/tra.../scratch/data'
 
 def resize_image(image, size):
     """Resize an image to the given size."""

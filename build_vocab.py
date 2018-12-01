@@ -5,7 +5,7 @@ from collections import Counter
 from pycocotools.coco import COCO
 
 public_directory = '/projects/training/bauh/COCO'
-local_directory = './data'
+local_direcotry = '/u/training/tra.../scratch/data'
 
 class Vocabulary(object):
     """Simple vocabulary wrapper."""

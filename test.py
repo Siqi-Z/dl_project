@@ -12,6 +12,7 @@ from torchvision import transforms
 from nltk.translate.bleu_score import sentence_bleu
 
 public_directory = '/projects/training/bauh/COCO'
+local_directory = '/u/training/tra.../scratch/data'
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -51,10 +52,10 @@ def main(args):
         
         # Set mini-batch dataset
         images = images.to(device)
-        captions = captions.to(device)
+        # captions = captions.to(device)
         
         # Generate an caption from the image
-        feature = encoder(image_tensor)
+        feature = encoder(images)
         sampled_ids = decoder.sample(feature)
         sampled_ids = sampled_ids[0].cpu().numpy()
 
@@ -67,7 +68,7 @@ def main(args):
                 break
         sentence = ' '.join(sampled_caption)
 
-        score = sentence_bleu(reference, candidate, args.bleu_weights)
+        score = sentence_bleu(captions, sentence, args.bleu_weights)
         bleu_scores.append(score)
 
         # Print log info
@@ -75,21 +76,21 @@ def main(args):
             print('Finish [{}/{}], Current BLEU Score: {:.4f}'
                   .format(i, total_step, np.mean(bleu_scores)))
 
-    np.save('test_results.npy', [bleu_scores, mean(bleu_scores)])
+    np.save('test_results.npy', [bleu_scores, np.mean(bleu_scores)])
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--encoder_path', type=str, default='models/encoder-2-1000.ckpt', help='path for trained encoder')
     parser.add_argument('--decoder_path', type=str, default='models/decoder-2-1000.ckpt', help='path for trained decoder')
-    parser.add_argument('--vocab_path', type=str, default='data/test_vocab.pkl', help='path for vocabulary wrapper')
+    parser.add_argument('--vocab_path', type=str, default=local_directory+'/vocab.pkl', help='path for vocabulary wrapper') # use train vocab
     
     # Model parameters (should be same as paramters in train.py)
     parser.add_argument('--embed_size', type=int , default=256, help='dimension of word embedding vectors')
     parser.add_argument('--hidden_size', type=int , default=512, help='dimension of lstm hidden states')
     parser.add_argument('--num_layers', type=int , default=1, help='number of layers in lstm')
 
-    parser.add_argument('--image_dir', type=str, default='data/val_resized', help='directory for resized images')
+    parser.add_argument('--image_dir', type=str, default=local_directory+'/val_resized', help='directory for resized images') # FIXME: debugging, use train_images
     parser.add_argument('--caption_path', type=str, default=public_directory+'/annotations/captions_val2014.json', help='path for train annotation json file')
     
     parser.add_argument('--log_step', type=int , default=10, help='step size for prining log info')

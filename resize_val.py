@@ -3,11 +3,11 @@ import os
 from PIL import Image
 
 public_directory = '/projects/training/bauh/COCO'
-local_directory = './data'
+local_directory = '/u/training/tra.../scratch/data'
 
 def resize_image(image, size):
     """Resize an image to the given size."""
-    return image.resize(size, Image.ANTIALIAS)
+    return image.resize(size, Image.LANCZOS)
 
 def resize_images(image_dir, output_dir, size):
     """Resize the images in 'image_dir' and save into 'output_dir'."""
@@ -38,7 +38,7 @@ if __name__ == '__main__':
                         help='directory for train images')
     parser.add_argument('--output_dir', type=str, default=local_directory+'/val_resized/',
                         help='directory for saving resized images')
-    parser.add_argument('--image_size', type=int, default=256,
+    parser.add_argument('--image_size', type=int, default=224,
                         help='size for image after processing')
     args = parser.parse_args()
     main(args)
