@@ -72,7 +72,7 @@ def segregate(dir_images, filepath_token, captions_path_input):
 	write_captions(dir_output['test'], ids_test, captions_dict)
 
 def load_captions(captions_dir):
-	caption_file = os.path.join(captions_dir, 'captions.txt')
+	caption_file = os.path.join(captions_dir, 'captions_full.txt')
 	captions_dict = {}
 	with open(caption_file) as f:
 		for line in f:
